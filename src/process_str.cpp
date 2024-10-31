@@ -10,7 +10,7 @@ static bool isdigit(char c) {
 	return c >= '0' && c <= '9';
 }
 
-int process_str(char *str, std::size_t len, std::size_t cap) {
+int process_str0(std::FILE *fs, char *str,std::size_t len, std::size_t cap) {
 	bool reverse = len % 2 == 0;
 
 	for (std::size_t i = 0; i < len; i++) {
@@ -23,7 +23,7 @@ int process_str(char *str, std::size_t len, std::size_t cap) {
 		}
 		len -= j - i;
 	}
-	std::printf("Output 1: '%.*s'\n", (int)len, str);
+	std::fprintf(fs, "Output 1: '%.*s'\n", (int)len, str);
 
 	for (std::size_t i = 0; i < len; i++) {
 		if (str[i] == '+' || str[i] == '-') {
@@ -34,7 +34,7 @@ int process_str(char *str, std::size_t len, std::size_t cap) {
 			i++;
 		}
 	}
-	std::printf("Output 2: '%.*s'\n", (int)len, str);
+	std::fprintf(fs, "Output 2: '%.*s'\n", (int)len, str);
 
 	if (reverse) {
 		for (std::size_t i = 0, j = len / 2; i < j; i++) {
@@ -43,6 +43,10 @@ int process_str(char *str, std::size_t len, std::size_t cap) {
 			str[len-1-i] = c;
 		}
 	}
-	std::printf("Output 3: '%.*s'\n", (int)len, str);
+	std::fprintf(fs, "Output 3: '%.*s'\n", (int)len, str);
 	return EXIT_SUCCESS;
+}
+
+int process_str(char *str, std::size_t len, std::size_t cap) {
+	return process_str0(stdout, str, len, cap);
 }
