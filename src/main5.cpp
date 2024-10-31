@@ -27,6 +27,15 @@ int main(void) {
 		}
 		str[len++] = last_char;
 	}
+	{
+		std::size_t new_capacity = str_capacity * 2;
+		char *tmp = (char *)realloc(str, new_capacity * sizeof(*tmp));
+		if (tmp == nullptr) {
+			free(str);
+			return EXIT_FAILURE;
+		}
+		str_capacity = new_capacity;
+	}
 	std::printf("Input: '%.*s'\n", (int)len, str);
 	return process_str(str, len, str_capacity);
 }

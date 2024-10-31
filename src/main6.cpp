@@ -72,6 +72,15 @@ int main(int argc, char *argv[]) {
 		free(str);
 		return EXIT_FAILURE;
 	}
+	{
+		std::size_t new_capacity = str_capacity * 2;
+		char *tmp = (char *)realloc(str, new_capacity * sizeof(*tmp));
+		if (tmp == nullptr) {
+			free(str);
+			return EXIT_FAILURE;
+		}
+		str_capacity = new_capacity;
+	}
 	std::fprintf(fs, "Input: '%s'\n", str);
 	int status = process_str0(fs, str, len, str_capacity);
 	std::fclose(fs);
