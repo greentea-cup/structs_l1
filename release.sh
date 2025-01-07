@@ -1,4 +1,4 @@
 #!/bin/bash
 X=$1
 shift
-cmake --build build/Release && ./build/Release/app$X $@
+cmake --build build/Release -t app$X && ./build/Release/app$X $@

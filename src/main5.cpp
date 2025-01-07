@@ -16,7 +16,7 @@ int main(void) {
 			break;
 		}
 		if (len + 1 == str_capacity) {
-			size_t new_capacity = str_capacity+5;
+			size_t new_capacity = str_capacity + 5;
 			char *tmp = (char *)realloc(str, new_capacity * sizeof(*tmp));
 			if (tmp == nullptr) {
 				free(str);

@@ -13,14 +13,14 @@ int main(int argc, char *argv[]) {
 	std::size_t len = 0;
 	char *str = (char *)calloc(str_capacity, sizeof(*str));
 	int last_char;
-	while(1) {
+	while (1) {
 		last_char = std::getchar();
 		if (last_char == EOF || last_char == '\n') {
 			str[len] = '\0';
 			break;
 		}
 		if (len + 1 == str_capacity) {
-			size_t new_capacity = str_capacity+5;
+			size_t new_capacity = str_capacity + 5;
 			char *tmp = (char *)realloc(str, new_capacity * sizeof(*tmp));
 			if (tmp == nullptr) {
 				free(str);
@@ -46,14 +46,14 @@ int main(int argc, char *argv[]) {
 	}
 	len = 0, str_capacity = 1;
 	str = (char *)calloc(str_capacity, sizeof(*str));
-	while(!std::ferror(fs)) {
+	while (!std::ferror(fs)) {
 		last_char = std::fgetc(fs);
 		if (last_char == EOF || last_char == '\n') {
 			str[len] = '\0';
 			break;
 		}
 		if (len + 1 == str_capacity) {
-			size_t new_capacity = str_capacity+5;
+			size_t new_capacity = str_capacity + 5;
 			char *tmp = (char *)realloc(str, new_capacity * sizeof(*tmp));
 			if (tmp == nullptr) {
 				free(str);

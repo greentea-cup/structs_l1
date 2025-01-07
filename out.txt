@@ -1,4 +1,4 @@
-Input: 'Hi -----'
-Output 1: 'Hi -----'
-Output 2: 'Hi ----------'
-Output 3: '---------- iH'
+Input: 'Hi 12-3 1+23+ -123 Whatever*'
+Output 1: 'Hi - ++ - Whatever*'
+Output 2: 'Hi -- ++++ -- Whatever*'
+Output 3: '*revetahW -- ++++ -- iH'

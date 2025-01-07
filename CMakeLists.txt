@@ -13,6 +13,13 @@ set(MSVC_FLAGS /utf-8 /J /W4 /Oi $<$<CONFIG:Release>:/O2>)
 
 foreach(TARGET_N 1 2 3 4 5 6)
 	add_executable(app${TARGET_N} "src/main${TARGET_N}.cpp" "src/process_str.cpp")
+endforeach()
+add_executable(app_laba3_one "laba3/main_one.cpp")
+add_executable(app_laba3_double "laba3/main_double.cpp")
+target_include_directories(app_laba3_one PRIVATE "laba3")
+target_include_directories(app_laba3_double PRIVATE "laba3")
+
+foreach(TARGET_N 1 2 3 4 5 6 laba3_one laba3_double)
 	if (CMAKE_C_COMPILER_ID STREQUAL "Clang")
 		target_compile_options(app${TARGET_N} PRIVATE ${CLANG_FLAGS})
 	elseif (CMAKE_C_COMPILER_ID STREQUAL "GNU")
@@ -22,5 +29,4 @@ foreach(TARGET_N 1 2 3 4 5 6)
 		target_compile_definitions(app${TARGET_N} PRIVATE _CRT_SECURE_NO_WARNINGS)
 	endif()
 endforeach()
-
 

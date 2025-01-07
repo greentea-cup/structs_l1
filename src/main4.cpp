@@ -16,7 +16,7 @@ int main(void) {
 			break;
 		}
 		{
-			size_t new_capacity = str_capacity+1;
+			size_t new_capacity = str_capacity + 1;
 			char *tmp = (char *)malloc(new_capacity * sizeof(*tmp));
 			if (tmp == nullptr) {
 				free(str);
