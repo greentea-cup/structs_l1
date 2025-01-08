@@ -6,6 +6,24 @@ template<typename T>
 struct OneList {
 public:
 	OneList() : start(nullptr) {}
+	OneList(OneList<T> const &other) : start(nullptr) {
+		if (other.empty()) return;
+		// range-based for, не зря же begin и end делал
+		for (T value : other) push_back(value);
+	}
+	OneList(std::initializer_list<T> other) : start(nullptr) {
+		for (T value : other) push_back(value);
+	}
+	~OneList() {
+		if (empty()) return;
+		Element *x = start;
+		start = nullptr;
+		while (x != nullptr) {
+			Element *prev = x;
+			x = prev->next;
+			delete prev;
+		}
+	}
 	struct Element {
 		T value;
 		Element *next;
@@ -25,52 +43,56 @@ public:
 
 		Element *current;
 		iterator(Element *start) : current(start) {}
-		bool operator==(iterator other) { return current == other.current; }
-		bool operator!=(iterator other) { return current != other.current; }
-		bool empty() { return current == nullptr; }
+		bool operator==(iterator other) const { return current == other.current; }
+		bool operator!=(iterator other) const { return current != other.current; }
+		bool empty() const { return current == nullptr; }
 		T operator*() {
 			if (empty()) { throw "Cannot dereference empty iterator"; }
 			return current->value;
 		}
-		iterator *operator++() {
+		iterator &operator++() {
 			if (empty()) { throw "Cannot iterate over empty list"; }
 			current = current->next;
-			return this;
+			return *this;
+		}
+		iterator operator++(int) {
+			if (empty()) { throw "Cannot iterate over empty list"; }
+			iterator copy = *this;
+			current = current->next;
+			return copy;
 		}
 		void insert_after(T value) {
 			if (empty()) { throw "Cannot insert into empty iterator"; }
 			current->insert_after(value);
 		}
 	};
-	Element *last_element() {
+	Element *last_element() const {
 		Element *x = start;
 		while (x != nullptr && x->next != nullptr) x = x->next;
 		return x;
 	}
-	Element *prelast_element() {
+	Element *walk(size_t i) const {
 		Element *x = start;
-		while (x != nullptr && x-> next != nullptr && x->next->next != nullptr) x = x->next;
+		while (x != nullptr && x->next != nullptr && i--)
+			x = x->next;
 		return x;
 	}
-	Element *walk(size_t i) {
-		Element *x = start;
-		while (x != nullptr && x->next != nullptr && i--) x = x->next;
-		return x;
-	}
-	size_t size() {
+	size_t size() const {
 		// todo: from current to first + from current to last
 		Element *x = start;
 		size_t size = 0;
 		while (x != nullptr) x = x->next, size++;
 		return size;
 	}
-	bool empty() {
+	bool empty() const {
 		return start == nullptr;
 	}
-	T &front() {
+	T &front() const {
+		if (empty()) { throw "Cannot get value from empty list"; }
 		return start->value;
 	}
-	T &back() {
+	T &back() const {
+		if (empty()) { throw "Cannot get value from empty list"; }
 		return last_element()->value;
 	}
 	void push_front(T value) {
@@ -91,43 +113,35 @@ public:
 		last->next = x;
 	}
 	void insert(size_t i, T value) {
+		if (i == 0) {
+			push_front(value);
+			return;
+		}
 		if (empty()) {
 			push_back(value);
 			return;
 		}
-		Element *before = walk(i);
+		Element *before = walk(i-1);
 		before->insert_after(value);
 	}
-	/*
-	Pop from empty list is forbidden
-	*/
-	T pop_front() {
-		if (empty()) { throw "Cannot get value from empty list"; }
+	void pop_front() {
+		if (empty()) return;
 		Element *x = start;
 		start = x->next;
-		start->prev = nullptr;
-		T value = x->value;
 		delete x;
-		return value;
 	}
-	/*
-	Pop from empty list is forbidden
-	*/
-	T pop_back() {
-		if (empty()) { throw "Cannot get value from empty list"; }
+	void pop_back() {
+		if (empty()) return;
 		if (start->next == nullptr) {
-			Element *last = start;
+			delete start;
 			start = nullptr;
-			T value = last->value;
-			delete last;
-			return value;
+			return;
 		}
-		Element *x = prelast_element();
+		Element *x = start;
+		while (x != nullptr && x->next != nullptr && x->next->next != nullptr) x = x->next;
 		Element *last = x->next;
-		x->next == nullptr;
-		T value = last->value;
 		delete last;
-		return value;
+		x->next = nullptr;
 	}
 	void remove(T value) {
 		if (empty()) return;
@@ -160,13 +174,13 @@ public:
 		}
 		start = prev;
 	}
-	iterator begin() {
+	iterator begin() const {
 		return (iterator){start};
 	}
-	iterator end() {
+	iterator end() const {
 		return nullptr;
 	}
-	T operator[](size_t index) {
+	T &operator[](size_t index) const {
 		if (empty() || size() <= index) { throw "Index out of bounds"; }
 		Element *x = walk(index);
 		return x->value;

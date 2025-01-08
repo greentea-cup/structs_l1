@@ -108,18 +108,17 @@ void counting_sort(int *array, size_t *temp, size_t len, size_t temp_len) {
 		if (array[i] < min) min = array[i];
 		if (array[i] > max) max = array[i];
 	}
-	if (temp_len < max-min+1) return;
+	if (temp_len < max - min + 1) return;
 	for (size_t i = 0; i < temp_len; i++) temp[i] = 0;
-	for (size_t i = 0; i < len; i++) {
-		temp[array[i]-min]++;
-	}
+	for (size_t i = 0; i < len; i++)
+		temp[array[i] - min]++;
 	for (size_t q = 0; q < temp_len; q++) std::cout << temp[q] << ' ';
 	std::cout << '\n';
 	int v = min;
 	for (size_t j = 0; v <= max && j < len; v++) {
-		while (j < len && temp[v-min] > 0) {
+		while (j < len && temp[v - min] > 0) {
 			array[j++] = v;
-			temp[v-min]--;
+			temp[v - min]--;
 		}
 	}
 }
@@ -135,11 +134,13 @@ void quick_sort(int *array, size_t len) {
 
 size_t quick_sort_partition(int *array, size_t start, size_t end) {
 	int pivot = array[start];
-	size_t i = start-1;
-	size_t j = end+1;
+	size_t i = start - 1;
+	size_t j = end + 1;
 	while (1) {
-		do i++; while (array[i] < pivot);
-		do j--; while (array[j] > pivot);
+		do i++;
+		while (array[i] < pivot);
+		do j--;
+		while (array[j] > pivot);
 		if (i < j) std::swap(array[i], array[j]);
 		else return j;
 	}
@@ -149,12 +150,12 @@ void quicksort0(int *array, size_t start, size_t end) {
 	if (start >= end) return;
 	size_t p = quick_sort_partition(array, start, end);
 	quicksort0(array, start, p);
-	quicksort0(array, p+1, end);
+	quicksort0(array, p + 1, end);
 }
 
 void real_quick_sort(int *array, size_t len) {
 	if (array == nullptr || len < 2) return;
-	quicksort0(array, 0, len-1);
+	quicksort0(array, 0, len - 1);
 }
 
 void heap_sort_makeheap(int *array, size_t len, size_t index) {
@@ -171,11 +172,10 @@ void heap_sort_makeheap(int *array, size_t len, size_t index) {
 
 void heap_sort(int *array, size_t len) {
 	if (array == nullptr || len < 2) return;
-	for (size_t i = len / 2 - 1; i > 0; i--) {
+	for (size_t i = len / 2 - 1; i > 0; i--)
 		heap_sort_makeheap(array, len, i);
-	}
 	heap_sort_makeheap(array, len, 0);
-	for (size_t i = len-1; i > 0; i--) {
+	for (size_t i = len - 1; i > 0; i--) {
 		std::swap(array[0], array[i]);
 		heap_sort_makeheap(array, i, 0);
 	}
@@ -183,7 +183,7 @@ void heap_sort(int *array, size_t len) {
 
 ssize_t binary_search(int const *array, size_t len, int value) {
 	if (array == nullptr || len < 2) return -1;
-	size_t left = 0, right = len-1;
+	size_t left = 0, right = len - 1;
 	while (left <= right) {
 		size_t mid = left + (right - left) / 2;
 		if (array[mid] == value) return (ssize_t)mid;
@@ -221,9 +221,9 @@ Node const *dfs(Node const *start, size_t max_depth, int value) {
 	if (start == nullptr || max_depth == 0) return nullptr;
 	if (start->value == value) return start;
 	Node const *res;
-	res = dfs(start->left, max_depth-1, value);
+	res = dfs(start->left, max_depth - 1, value);
 	if (res == nullptr)
-		res = dfs(start->right, max_depth-1, value);
+		res = dfs(start->right, max_depth - 1, value);
 	return res;
 }
 
