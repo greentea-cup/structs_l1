@@ -157,8 +157,28 @@ void real_quick_sort(int *array, size_t len) {
 	quicksort0(array, 0, len-1);
 }
 
-void pyramid_sort(int *array, size_t len) {
+void heap_sort_makeheap(int *array, size_t len, size_t index) {
+	if (array == nullptr || len < 2 || index >= len) return;
+	size_t maxi = index;
+	size_t left = 2 * index + 1, right = 2 * index + 2;
+	if (left < len && array[left] > array[maxi]) maxi = left;
+	if (right < len && array[right] > array[maxi]) maxi = right;
+	if (maxi != index) {
+		std::swap(array[index], array[maxi]);
+		heap_sort_makeheap(array, len, maxi);
+	}
+}
 
+void heap_sort(int *array, size_t len) {
+	if (array == nullptr || len < 2) return;
+	for (size_t i = len / 2 - 1; i > 0; i--) {
+		heap_sort_makeheap(array, len, i);
+	}
+	heap_sort_makeheap(array, len, 0);
+	for (size_t i = len-1; i > 0; i--) {
+		std::swap(array[0], array[i]);
+		heap_sort_makeheap(array, i, 0);
+	}
 }
 
 ssize_t binary_search(int const *array, size_t len, int value) {
@@ -179,14 +199,32 @@ typedef struct Node {
 	struct Node *right;
 } Node;
 
-ssize_t bfs(Node const *start, size_t max_depth, int value) {
-	if (start == nullptr) return -1;
-	return -1;
+#ifndef BFS_MAX_STACK_SIZE
+#define BFS_MAX_STACK_SIZE 256
+#endif
+Node const *bfs(Node const *start, int value) {
+	if (start == nullptr) return nullptr;
+	size_t const qcap = BFS_MAX_STACK_SIZE;
+	Node const *temp[qcap] = {start};
+	size_t qfront = 0, qback = 1;
+	while (qback > qfront) {
+		Node const *x = temp[qfront++ % qcap];
+		if (x == nullptr) continue;
+		if (x->value == value) return x;
+		if (x->left != nullptr) temp[qback++ % qcap] = x->left;
+		if (x->right != nullptr) temp[qback++ % qcap] = x->right;
+	}
+	return nullptr;
 }
 
-ssize_t dfs(Node const *start, size_t max_depth, int value) {
-	if (start == nullptr) return -1;
-	return -1;
+Node const *dfs(Node const *start, size_t max_depth, int value) {
+	if (start == nullptr || max_depth == 0) return nullptr;
+	if (start->value == value) return start;
+	Node const *res;
+	res = dfs(start->left, max_depth-1, value);
+	if (res == nullptr)
+		res = dfs(start->right, max_depth-1, value);
+	return res;
 }
 
 int merge_main(void) {
@@ -218,6 +256,15 @@ int counting_main(void) {
 	return 0;
 }
 
+int heap_main(void) {
+	size_t const len = 10;
+	int data[len] = {5, 1, 3, 4, 0, 9, 8, 7, 6, 2};
+	heap_sort(data, len);
+	for (size_t i = 0; i < len; i++) std::cout << data[i] << ' ';
+	std::cout << '\n';
+	return 0;
+}
+
 int binary_search_main(void) {
 	size_t const len = 10;
 	int data[len] = {0, 1, 5, 6, 8, 13, 17, 18, 20, 22};
@@ -232,10 +279,48 @@ int binary_search_main(void) {
 
 int dfs_main(void) {
 	Node data[10] = {{0}, {1}, {5}, {6}, {8}, {13}, {17}, {18}, {20}, {22}};
+	data[0].left = &data[1];
+	data[0].right = &data[2];
+	data[1].left = &data[3];
+	data[1].right = &data[4];
+	data[2].left = &data[5];
+	data[2].right = &data[6];
+	data[3].left = &data[7];
+	data[3].right = &data[8];
+	data[4].left = &data[9];
+	Node const *x = dfs(&data[0], 4, 18);
+	std::cout << std::boolalpha;
+	std::cout << "x == nullptr?: " << (x == nullptr) << '\n';
+	if (x == nullptr) return 1;
+	std::cout << "x = " << x->value << '\n';
+	std::cout << "x is data[7]?: " << (x == &data[7]) << '\n';
+	return 0;
+}
+
+int bfs_main(void) {
+	Node data[10] = {{0}, {1}, {5}, {6}, {8}, {13}, {17}, {18}, {20}, {22}};
+	data[0].left = &data[1];
+	data[0].right = &data[2];
+	data[1].left = &data[3];
+	data[1].right = &data[4];
+	data[2].left = &data[5];
+	data[2].right = &data[6];
+	data[3].left = &data[7];
+	data[3].right = &data[8];
+	data[4].left = &data[9];
+	Node const *x = bfs(&data[0], 18);
+	std::cout << std::boolalpha;
+	std::cout << "x == nullptr?: " << (x == nullptr) << '\n';
+	if (x == nullptr) return 1;
+	std::cout << "x = " << x->value << '\n';
+	std::cout << "x is data[7]?: " << (x == &data[7]) << '\n';
 	return 0;
 }
 
 int main(void) {
 	// return counting_main();
-	return binary_search_main();
+	// return binary_search_main();
+	// return heap_main();
+	// return bfs_main();
+	return 0;
 }
