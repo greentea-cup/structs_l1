@@ -24,14 +24,13 @@ int one_main(void) {
 	std::cout << "Next element is: " << *iter << "\n";
 	whatever.push_back(456);
 	whatever.push_back(789);
-	for (iter = whatever.begin(); iter != whatever.end(); ++iter) {
+	for (iter = whatever.begin(); iter != whatever.end(); ++iter)
 		std::cout << *iter << " ";
-	}
 	std::cout << '\n';
 	return 0;
 }
 
 int main(void) {
 	// return one_main();
-	return task<OneList<char>>();
+	return task<OneList<char >> ();
 }

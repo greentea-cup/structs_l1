@@ -16,7 +16,8 @@ int process_str0(std::FILE *fs, char *str, std::size_t len, std::size_t cap) {
 	for (std::size_t i = 0; i < len; i++) {
 		if (!isdigit(str[i])) continue;
 		std::size_t j = i;
-	std:;
+	std:
+		;
 		size_t added = 0;
 		for (; j < len && isdigit(str[j]); j++);
 		for (std::size_t x = i, y = j; x < cap && y < len; x++, y++)

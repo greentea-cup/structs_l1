@@ -29,5 +29,5 @@ int double_main(void) {
 
 int main(void) {
 	// return double_main();
-	return task<DoubleList<char>>();
+	return task<DoubleList<char >> ();
 }
